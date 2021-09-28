@@ -86,7 +86,7 @@ namespace Ragnarok.AgentApi
 
             var response = await Client.GetAsync(TunnelsEndpoint, cancellationToken);
             var details = await ParseResponseAsync<TunnelList>(response, cancellationToken: cancellationToken);
-            //TODO - see if null or empty list
+
             return details.Tunnels.ToImmutableArray();
         }
 
