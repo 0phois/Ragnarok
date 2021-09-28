@@ -163,6 +163,7 @@ namespace Ragnarok.Test
         }
 
         [Fact]
+        [Order(25)]
         public async Task Connect_With_Options()
         {
             #region arrange
@@ -172,7 +173,29 @@ namespace Ragnarok.Test
 
             #region act
             var credentials = new AuthenticationCredentials() { Username = "bob", Password = "passw0rd" };
-            var detail = await Ragnarok.ConnectAsync(options => { options.Name = "secure"; options.Address = "5432"; options.Auth = credentials; });
+            var detail = await Ragnarok.ConnectAsync(opts => { opts.Name = "secure"; opts.Address = "5432"; opts.Auth = credentials; });
+            Ragnarok.StopNgrokProcess();
+            #endregion
+
+            #region assert
+            Assert.NotNull(detail);
+            Assert.Equal("secure", detail.Name);
+            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal("http://localhost:5432", detail.Config.Address);
+            #endregion
+        }
+
+        [Fact]
+        [Order(26)]
+        public async Task Connect_With_DefinitionExtension()
+        {
+            #region arrange
+            foreach (var process in Process.GetProcessesByName("ngrok"))
+                process.Kill();
+            #endregion
+
+            #region act
+            var detail = await Ragnarok.ConnectAsync(new TunnelDefinition().Name("secure").Port(5432).Auth("bob", "passw0rd"));
             Ragnarok.StopNgrokProcess();
             #endregion
 
