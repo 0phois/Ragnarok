@@ -10,18 +10,17 @@
 ngrok is a reverse proxy that creates a secure tunnel from a public endpoint to a locally running web service.
 ngrok captures and analyzes all traffic over the tunnel for later inspection and replay.  
 
-### What is the [ngork Agent Api](https://ngrok.com/docs#client-api) 
+### What is the [ngork Agent Api](https://ngrok.com/docs#client-api)? 
 The ngrok client exposes an HTTP API that grants programmatic access to:
  * Collect status and metrics information
  * Collect and replay captured requests
- * Start and stop tunnels dynamically  
-   
+ * Start and stop tunnels dynamically     
      
      
  # Project Breakdown
  
  ### [Ragnarok Agent Api](https://github.com/0phois/Ragnarok/tree/master/Ragnarok.AgentApi)
- This project acts as a wrapper for the ngrok client agent api. All api endpoints are exposed via the [Ragnarok Client](https://github.com/0phois/Ragnarok/blob/master/Ragnarok.AgentApi/Client/RagnarokClient.Requests.cs), while convenience method for connecting and disconnecting tunnels are provided via [client extensions](https://github.com/0phois/Ragnarok/blob/master/Ragnarok.AgentApi/Helpers/Extensions/RagnorokClientExtensions.cs).   
+ This project acts as a wrapper for the ngrok agent api. All api endpoints are exposed via the [Ragnarok Client](https://github.com/0phois/Ragnarok/blob/master/Ragnarok.AgentApi/Client/RagnarokClient.Requests.cs), with convenience methods to `connect` and `disconnect` tunnels are provided via [client extensions](https://github.com/0phois/Ragnarok/blob/master/Ragnarok.AgentApi/Helpers/Extensions/RagnorokClientExtensions.cs).   
  
  For additional details, refer to the [project readme](https://github.com/0phois/Ragnarok/tree/master/Ragnarok.AgentApi) 
  
