@@ -20,7 +20,7 @@ The ngrok client exposes an HTTP API that grants programmatic access to:
  # Project Breakdown
  
  ### [Ragnarok Agent Api](https://github.com/0phois/Ragnarok/tree/master/Ragnarok.AgentApi)
- This project acts as a wrapper for the ngrok agent api. All api endpoints are exposed via the [Ragnarok Client](https://github.com/0phois/Ragnarok/blob/master/Ragnarok.AgentApi/Client/RagnarokClient.Requests.cs), with convenience methods to `connect` and `disconnect` tunnels are provided via [client extensions](https://github.com/0phois/Ragnarok/blob/master/Ragnarok.AgentApi/Helpers/Extensions/RagnorokClientExtensions.cs).   
+ This project acts as a wrapper for the ngrok agent api. All api endpoints are exposed via the [Ragnarok Client](https://github.com/0phois/Ragnarok/blob/master/Ragnarok.AgentApi/Client/RagnarokClient.Requests.cs), with convenience methods to `connect` and `disconnect` tunnels provided via [client extensions](https://github.com/0phois/Ragnarok/blob/master/Ragnarok.AgentApi/Helpers/Extensions/RagnorokClientExtensions.cs).   
  
  For additional details, refer to the [project readme](https://github.com/0phois/Ragnarok/tree/master/Ragnarok.AgentApi) 
  
