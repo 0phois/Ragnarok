@@ -148,7 +148,7 @@ namespace Ragnarok.Test
             #endregion
 
             #region act
-            var replayed = await Ragnarok.ReplayCapturedRequestsAsync(requestId);
+            var replayed = await Ragnarok.ReplayCapturedRequestAsync(requestId);
 
             await Task.Delay(300);
 
@@ -177,7 +177,7 @@ namespace Ragnarok.Test
             #region act
             StopListener();
 
-            Task act() => Ragnarok.ReplayCapturedRequestsAsync("invalid_id");
+            Task act() => Ragnarok.ReplayCapturedRequestAsync("invalid_id");
             #endregion
 
             #region assert

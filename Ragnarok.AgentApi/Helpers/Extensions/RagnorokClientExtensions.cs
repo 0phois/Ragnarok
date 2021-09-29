@@ -45,6 +45,7 @@ namespace Ragnarok.AgentApi.Extensions
         /// <param name="authToken">Authorization token to register in ngrok.yml</param>
         /// <returns><see cref="TunnelDetail"/></returns>
         /// <remarks>
+        /// The name provided must exist in the ngrok configuration file. <br/>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
         public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, string tunnelName, 

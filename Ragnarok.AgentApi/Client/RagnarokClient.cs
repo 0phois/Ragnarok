@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
+using static Microsoft.Extensions.Options.Options;
 
 namespace Ragnarok.AgentApi
 {
@@ -33,6 +34,8 @@ namespace Ragnarok.AgentApi
         
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
+
+        public RagnarokClient() : this(new HttpClient(), Create(new RagnarokOptions())) { }
 
         public RagnarokClient(HttpClient httpClient, IOptions<RagnarokOptions> options, ILogger logger = null)
         {

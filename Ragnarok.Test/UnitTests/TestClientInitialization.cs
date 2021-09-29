@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Ragnarok.AgentApi;
 using Ragnarok.AgentApi.Extensions;
-using Ragnarok.AgentApi.Helpers;
 using Ragnarok.AgentApi.Models;
 using Ragnarok.Test.Logging;
 using System;
@@ -29,7 +28,7 @@ namespace Ragnarok.Test
 
             var httpClient = new HttpClient();
             var logger = XUnitLogger.CreateLogger<RagnarokClient>(_testOutputHelper);
-            var optionAccessor = setup.ServiceProvider.GetService<IOptions<RagnarokOptions>>();            
+            var optionAccessor = setup.ServiceProvider.GetService<IOptions<RagnarokOptions>>();
 
             Ragnarok = new RagnarokClient(httpClient, optionAccessor, logger);
         }

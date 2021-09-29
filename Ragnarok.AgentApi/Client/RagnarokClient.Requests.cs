@@ -72,7 +72,7 @@ namespace Ragnarok.AgentApi
         /// <param name="requestId">The id of request to replay</param>
         /// <param name="tunnelName">The name of the tunnel to play the request against. 
         /// If unspecified, the request is played against the same tunnel it was recorded on</param>
-        public Task<bool> ReplayCapturedRequestsAsync(string requestId, string tunnelName = null, CancellationToken cancellationToken = default)
+        public Task<bool> ReplayCapturedRequestAsync(string requestId, string tunnelName = null, CancellationToken cancellationToken = default)
             => Ngrok.IsActive ? AgentApi.ReplayCapturedRequestsAsync(requestId, tunnelName, cancellationToken) : throw new NotInitializedException();
 
         /// <summary>

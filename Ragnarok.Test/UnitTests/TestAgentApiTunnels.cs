@@ -6,7 +6,6 @@ using Ragnarok.AgentApi.Exceptions;
 using Ragnarok.AgentApi.Models;
 using Ragnarok.Test.Logging;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -172,7 +171,7 @@ namespace Ragnarok.Test
 
         [Fact]
         [Order(18)]
-        public async Task StopNgrokTunnel()
+        public async Task ListNgrokTunnels_After_StoppingTunnel()
         {
             #region arrange
             await Ragnarok.InitializeAsync(); 
