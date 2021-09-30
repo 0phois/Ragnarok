@@ -35,12 +35,13 @@ namespace Ragnarok.AgentApi
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
 
-        public RagnarokClient() : this(new HttpClient(), Create(new RagnarokOptions())) { }
-
-        public RagnarokClient(HttpClient httpClient, IOptions<RagnarokOptions> options, ILogger logger = null)
+        public RagnarokClient(ILogger<RagnarokClient> logger = null) : this(new HttpClient(), Create(new RagnarokOptions()), logger) { }
+        public RagnarokClient(HttpClient httpClient, IOptions<RagnarokOptions> options = null, ILogger<RagnarokClient> logger = null)
         {
             _logger = logger;
             _httpClient = httpClient;
+
+            options ??= Create(new RagnarokOptions());
 
             Options = ConfigureOptions(options.Value);
             Config = GetNgrokConfiguration(Options.NgrokConfigPath);
@@ -86,7 +87,7 @@ namespace Ragnarok.AgentApi
         {
             if (Config.LogLevel > NgrokConfigLogLevel.Info)
             {
-                _logger.LogWarning("Unable to wait for connection event. Delaying 1s...Enable Log_Level info for more accurate connection wait times");
+                _logger?.LogWarning("Unable to wait for connection event. Delaying 1s...Enable Log_Level info for more accurate connection wait times");
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
             else

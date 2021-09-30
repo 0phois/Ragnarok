@@ -18,7 +18,7 @@ namespace Ragnarok.Test
     public class TestAgentApiTunnels : IDisposable, IClassFixture<TestSetup>
     {
         private RagnarokClient Ragnarok { get; }
-        private readonly ILogger _logger;
+        private readonly ILogger<RagnarokClient> _logger;
         private readonly ITestOutputHelper _testOutputHelper;
 
         public TestAgentApiTunnels(TestSetup setup, ITestOutputHelper testOutputHelper)

@@ -49,7 +49,7 @@ namespace Ragnarok.AgentApi
             int attempts = 0;
             string json = JsonSerializer.Serialize(request).ToLower();
 
-            _logger.LogDebug("POST: {Base}{Endpoint}={Content}", Client.BaseAddress, TunnelsEndpoint, json);
+            _logger?.LogDebug("POST: {Base}{Endpoint}={Content}", Client.BaseAddress, TunnelsEndpoint, json);
 
             using var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             do
@@ -73,7 +73,7 @@ namespace Ragnarok.AgentApi
 
             var request = string.Format(FormattedTunnelsEndpoint, name);
 
-            _logger.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, request);
+            _logger?.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, request);
 
             var response = await Client.GetAsync(request, cancellationToken);
             
@@ -82,7 +82,7 @@ namespace Ragnarok.AgentApi
 
         public async Task<ImmutableArray<TunnelDetail>> ListTunnelsAsync(CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, TunnelsEndpoint);
+            _logger?.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, TunnelsEndpoint);
 
             var response = await Client.GetAsync(TunnelsEndpoint, cancellationToken);
             var details = await ParseResponseAsync<TunnelList>(response, cancellationToken: cancellationToken);
@@ -96,7 +96,7 @@ namespace Ragnarok.AgentApi
 
             var request = string.Format(FormattedTunnelsEndpoint, name);
 
-            _logger.LogDebug("Delete: {Base}{Endpoint}", Client.BaseAddress, request);
+            _logger?.LogDebug("Delete: {Base}{Endpoint}", Client.BaseAddress, request);
 
             var response = await Client.DeleteAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode) await ParseRequestErrorAsync(response, cancellationToken: cancellationToken);
@@ -104,7 +104,7 @@ namespace Ragnarok.AgentApi
 
         public async Task<ImmutableArray<RequestDetail>> ListCapturedRequestsAsync(Action<RequestParameters> options, CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, RequestsEndpoint);
+            _logger?.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, RequestsEndpoint);
 
             var parameters = new RequestParameters();
             options?.Invoke(parameters);
@@ -130,7 +130,7 @@ namespace Ragnarok.AgentApi
 
             var request = string.Format(FormattedRequestsEndpoint, requestId);
 
-            _logger.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, request);
+            _logger?.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, request);
 
             var response = await Client.GetAsync(request, cancellationToken);
 
@@ -143,7 +143,7 @@ namespace Ragnarok.AgentApi
 
             var json = JsonSerializer.Serialize(new { id = requestId, tunnel_name = tunnelName });
 
-            _logger.LogDebug("POST: {Base}{Endpoint}={Content}", Client.BaseAddress, RequestsEndpoint, json);
+            _logger?.LogDebug("POST: {Base}{Endpoint}={Content}", Client.BaseAddress, RequestsEndpoint, json);
 
             using var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             var response = await Client.PostAsync(RequestsEndpoint, content, cancellationToken);
@@ -159,7 +159,7 @@ namespace Ragnarok.AgentApi
 
         public async Task<bool> DeleteCapturedRequestsAsync(CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Delete: {Base}{Endpoint}", Client.BaseAddress, RequestsEndpoint);
+            _logger?.LogDebug("Delete: {Base}{Endpoint}", Client.BaseAddress, RequestsEndpoint);
 
             var response = await Client.DeleteAsync(RequestsEndpoint, cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -182,7 +182,7 @@ namespace Ragnarok.AgentApi
             {
                 using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
 
-                _logger.LogDebug("Request executed successfully - Status: {Code}", response.StatusCode);
+                _logger?.LogDebug("Request executed successfully - Status: {Code}", response.StatusCode);
 
                 return await JsonSerializer.DeserializeAsync<T>(responseStream, cancellationToken: cancellationToken);
             }

@@ -22,7 +22,7 @@ namespace Ragnarok.Test
     {
         private RagnarokClient Ragnarok { get; }
         private HttpListener Listener { get; }
-        private readonly ILogger _logger;
+        private readonly ILogger<RagnarokClient> _logger;
         private readonly ITestOutputHelper _testOutputHelper;
 
         public TestAgentApiRequests(TestSetup setup, ITestOutputHelper testOutputHelper)

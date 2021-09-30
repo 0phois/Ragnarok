@@ -89,7 +89,7 @@ namespace Ragnarok.Test
         public async Task RegisterAuthToken_Without_ActiveNgrokProcess()
         {
             #region arrange
-            var authToken = File.ReadAllText("./Authtoken.key");
+            var authToken = File.ReadAllText("./authtoken.key");
             foreach (var process in Process.GetProcessesByName("ngrok"))
                 process.Kill();
             #endregion
@@ -107,7 +107,7 @@ namespace Ragnarok.Test
         public async Task RegisterAuthToken_With_ActiveNgrokProcess()
         {
             #region arrange
-            var authToken = File.ReadAllText("./AuthToken.key");
+            var authToken = File.ReadAllText("./authtoken.key");
             await Ragnarok.InitializeAsync();
             #endregion
 
@@ -127,7 +127,7 @@ namespace Ragnarok.Test
         {
             #region arrange
             var definition = new TunnelDefinition();
-            var authToken = File.ReadAllText("./Authtoken.key");
+            var authToken = File.ReadAllText("./authtoken.key");
             await Ragnarok.InitializeAsync();
             await Ragnarok.StartTunnelAsync(definition);
             #endregion

@@ -65,7 +65,7 @@ namespace Ragnarok.Test
             #endregion
 
             #region act
-            var token = File.ReadAllText("./AuthToken.key");
+            var token = File.ReadAllText("./authtoken.key");
             var detail = await Ragnarok.ConnectAsync(authToken: token);
             Ragnarok.StopNgrokProcess();
             #endregion
@@ -109,7 +109,7 @@ namespace Ragnarok.Test
             #endregion
 
             #region act
-            var token = File.ReadAllText("./AuthToken.key");
+            var token = File.ReadAllText("./authtoken.key");
             var detail = await Ragnarok.ConnectAsync(5555, token);
             Ragnarok.StopNgrokProcess();
             #endregion

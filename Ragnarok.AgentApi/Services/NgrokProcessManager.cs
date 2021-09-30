@@ -86,6 +86,8 @@ namespace Ragnarok.AgentApi.Services
             if (!Process.HasExited) Process.Kill();
 
             IsActive = false;
+
+            Process?.Close();
         }
 
         private void ProcessExited(object sender, EventArgs e)
