@@ -64,7 +64,7 @@ namespace Ragnarok.AgentApi
                 await Task.Delay(100, cancellationToken);
             } while (retry);
 
-            return new TunnelDetail();
+            return null;
         }
 
         public async Task<TunnelDetail> GetTunnelDetailAsync(string name, CancellationToken cancellationToken = default)

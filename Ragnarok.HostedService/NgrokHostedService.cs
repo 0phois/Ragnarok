@@ -18,7 +18,7 @@ namespace Ragnarok.HostedService
     public class NgrokHostedService : INgrokHostedService, IDisposable
     {
         public event EventHandler Ready;
-        protected virtual void OnReady() => Ready?.Invoke(this, EventArgs.Empty);
+        protected virtual void OnReady(IEnumerable<TunnelDetail> tunnels) => Ready?.Invoke(this, new ReadyEventArgs() { Tunnels = tunnels });
 
         public RagnarokClient RagnarokClient { get; }
 
@@ -42,21 +42,28 @@ namespace Ragnarok.HostedService
             _authToken = token?.RawValue;
             _appLifetime = applicationLifetime;
         }
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _appLifetime.ApplicationStarted.Register(async () => 
             {
+                var tunnels = new List<TunnelDetail>();
                 var addresses = GetApplicationUrls();
+
+                if (!string.IsNullOrWhiteSpace(_authToken)) await RagnarokClient.RegisterAuthTokenAsync(_authToken);
 
                 foreach (var address in addresses)
                 {
                     var bind = address.StartsWith("http://") ? BindTLS.Both : BindTLS.True;
-                    var tunnel = await RagnarokClient.ConnectAsync(new TunnelDefinition().Address(address).BindTLS(bind), _authToken, cancellationToken);
+                    var tunnel = await RagnarokClient.ConnectAsync(new TunnelDefinition().Address(address).BindTLS(bind), 
+                                                                   cancellation: cancellationToken);
+
+                    if (tunnel != null) tunnels.Add(tunnel);
 
                     _logger?.LogInformation("Started tunnel {name}: {url} -> {localAddress}", tunnel.Name, tunnel.PublicURL, address);
                 }
 
-                OnReady();
+                OnReady(tunnels);
             });
 
             return Task.CompletedTask;
