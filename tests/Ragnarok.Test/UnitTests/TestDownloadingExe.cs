@@ -83,6 +83,29 @@ namespace Ragnarok.Test
 
         [Fact]
         [Order(4)]
+        public async Task InitializeRagnarok_DownloadConfig_False()
+        {
+            #region arrange
+            foreach (var process in Process.GetProcessesByName("ngrok"))
+                process.Kill();
+
+            if (File.Exists(Ragnarok.Options.NgrokExecutablePath))
+                File.Delete(Ragnarok.Options.NgrokExecutablePath);
+
+            Ragnarok.Options.DownloadNgrok = false;
+            #endregion
+
+            #region act
+            Task act() => Ragnarok.InitializeAsync();
+            #endregion
+
+            #region assert
+            await Assert.ThrowsAsync<FileNotFoundException>(act);
+            #endregion
+        }
+
+        [Fact]
+        [Order(5)]
         public async Task InitializeRagnarok_DownloadConfig_True()
         {
             #region arrange
@@ -106,29 +129,6 @@ namespace Ragnarok.Test
             Assert.True(Ragnarok.Ngrok.IsActive);
             Assert.True(Ragnarok.Ngrok.IsManaged);
             Assert.True(File.Exists(Ragnarok.Options.NgrokExecutablePath));
-            #endregion
-        }
-
-        [Fact]
-        [Order(5)]
-        public async Task InitializeRagnarok_DownloadConfig_False()
-        {
-            #region arrange
-            foreach (var process in Process.GetProcessesByName("ngrok"))
-                process.Kill();
-
-            if (File.Exists(Ragnarok.Options.NgrokExecutablePath))
-                File.Delete(Ragnarok.Options.NgrokExecutablePath);
-
-            Ragnarok.Options.DownloadNgrok = false;
-            #endregion
-
-            #region act
-            Task act() => Ragnarok.InitializeAsync();
-            #endregion
-
-            #region assert
-            await Assert.ThrowsAsync<FileNotFoundException>(act);
             #endregion
         }
 
