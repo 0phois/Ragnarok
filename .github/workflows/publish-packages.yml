@@ -29,7 +29,7 @@ jobs:
     - name: Publish Hosted Service
       uses: brandedoutcast/publish-nuget@v2.5.2
       with:
-        PROJECT_FILE_PATH: src/Ragnarok.AgentApi/Ragnarok.AgentApi.csproj
+        PROJECT_FILE_PATH: src/Ragnarok.HostedService/Ragnarok.HostedService.csproj
         VERSION_FILE_PATH: Directory.Build.props
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
         INCLUDE_SYMBOLS: true
