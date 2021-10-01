@@ -5,7 +5,7 @@
 # Ragnarok.AgentApi
 
 ## Installation
-Nuget package not yet available
+Install via [Nuget](https://www.nuget.org/packages/Ragnarok.AgentApi/)
 
 # Usage
 ## Ngrok Process

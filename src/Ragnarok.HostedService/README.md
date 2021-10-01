@@ -6,7 +6,7 @@
 By adding the `NgrokHostedService` to your application, ngrok tunnels will be automatically created for any local application URLs.
 
 ## Installation
-Nuget package not yet available
+Install via [Nuget](https://www.nuget.org/packages/Ragnarok.HostedService/)
 
 # Usage
 ## UseNgrok Extension
