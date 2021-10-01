@@ -1,13 +1,12 @@
 ﻿using Ragnarok.AgentApi.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ragnarok.AgentApi.Contracts
 {
-    public interface INgrokClient
+    internal interface INgrokClient
     {
 		/// <summary>
 		/// Dynamically starts a new tunnel on the ngrok client
