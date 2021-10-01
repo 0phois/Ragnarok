@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ragnarok.HostedService", "R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ragnarok.Test", "Ragnarok.Test\Ragnarok.Test.csproj", "{96014DF0-2881-432F-9EA2-55EC3B60B585}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F5FD3F8F-4C1D-4824-B04D-C2CDE0E01704}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{54FE648F-488E-4079-81FA-5278EF4BB596}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +34,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{00541E6C-5E41-4A76-80BC-1C3471AF3E4D} = {F5FD3F8F-4C1D-4824-B04D-C2CDE0E01704}
+		{F85F28F9-48F3-4993-B4ED-BF0DA7E81D12} = {F5FD3F8F-4C1D-4824-B04D-C2CDE0E01704}
+		{96014DF0-2881-432F-9EA2-55EC3B60B585} = {54FE648F-488E-4079-81FA-5278EF4BB596}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FBBBA32-6861-45EF-ACD3-3A785EAD8668}

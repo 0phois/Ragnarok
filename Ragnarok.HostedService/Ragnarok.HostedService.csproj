@@ -1,7 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Authors>0phois</Authors>
+    <Company>Ophois</Company>
+    <Product>Ragnarok.HostedService</Product>
+    <Description>A hosted service that automatically starts ngrok and establishes tunnels for the application's local urls</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/0phois/Ragnarok</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/0phois/Ragnarok</RepositoryUrl>
+    <PackageTags>ngrok ngrok-tunnel localhost-tunnel ngrok-api ngrok-dotnet ngrok-library ngrok-chsarp localhost</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +20,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ragnarok.AgentApi\Ragnarok.AgentApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

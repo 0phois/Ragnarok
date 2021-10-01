@@ -2,21 +2,27 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Authors>0phois</Authors>
+    <Company>Ophois</Company>
+    <Description>A .Net wrapper for ngrok. Expose your localhost to the web</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/0phois/Ragnarok</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/0phois/Ragnarok</RepositoryUrl>
+    <PackageTags>ngrok ngrok-tunnel localhost-tunnel ngrok-api ngrok-dotnet ngrok-library ngrok-chsarp localhost</PackageTags>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="RagnarokClient.Events.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Client\RagnarokClient.Events.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
