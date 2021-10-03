@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Ragnarok.AgentApi.Services
 {
+    /// <summary>
+    /// Manages the downloading of the ngrok executable file
+    /// </summary>
     public sealed class DownloadManager
     {
         private const string CDN = "https://bin.equinox.io";
@@ -17,6 +20,8 @@ namespace Ragnarok.AgentApi.Services
         private readonly HttpClient _httpClient;
         private string DownloadUrl { get; } = $"{CDN}/{CDN_Path}-{RuntimeHelper.GetOsArchitectureString()}.zip";
 
+
+        /// <param name="httpClient">Http client used to download the ngrok executable</param>
         public DownloadManager(HttpClient httpClient) => _httpClient = httpClient;
 
         /// <summary>

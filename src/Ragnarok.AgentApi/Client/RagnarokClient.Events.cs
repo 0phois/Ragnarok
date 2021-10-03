@@ -11,6 +11,10 @@ namespace Ragnarok.AgentApi
         /// Raised when the ngrok session is established
         /// </summary>
         public event EventHandler Connected;
+
+        /// <summary>
+        /// Raises the <see cref="Connected"/> event
+        /// </summary>
         protected virtual void OnConnected() => Connected?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
@@ -18,12 +22,21 @@ namespace Ragnarok.AgentApi
         /// <i>Does not fire when the process is terminated</i>
         /// </summary>
         public event EventHandler Disconnected;
+
+        /// <summary>
+        /// Raises the <see cref="Disconnected"/> event
+        /// </summary>
         protected virtual void OnDisconnected() => Disconnected?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
         /// Raised when the ngrok process exits
         /// </summary>
         public event EventHandler<TerminateEventArgs> Terminated;
+
+        /// <summary>
+        /// Raises the <see cref="Terminated"/> event
+        /// </summary>
+        /// <param name="process">The ngrok <see cref="Process"/> that was terminated</param>
         protected virtual void OnTerminated(Process process) 
             => Terminated?.Invoke(this, new TerminateEventArgs() { ProcessId = process.Id, ExitCode = process.ExitCode});
 
@@ -31,6 +44,11 @@ namespace Ragnarok.AgentApi
         /// Raised when a tunnel is successfully started
         /// </summary>
         public event EventHandler TunnelCreated;
+
+        /// <summary>
+        /// Raises the <see cref="TunnelCreated"/> event
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnTunnelCreated(TunnelCreatedEventArgs args) 
             => TunnelCreated?.Invoke(this, args);
 

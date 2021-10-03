@@ -122,6 +122,9 @@ namespace Ragnarok.AgentApi.Services
             if (!string.IsNullOrWhiteSpace(e.Data))_logger?.Log(e.Data);              
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public void Dispose() => Process?.Dispose();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Ragnarok.AgentApi.Models
 {
+#pragma warning disable CS1591
     public class Metrics
     {
 		[JsonPropertyName("count")]
@@ -28,4 +29,5 @@ namespace Ragnarok.AgentApi.Models
 		[JsonPropertyName("p99")]
 		public decimal P99 { get; set; }
 	}
+#pragma warning restore CS1591
 }

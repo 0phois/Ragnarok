@@ -18,15 +18,20 @@ using static Microsoft.Extensions.Options.Options;
 
 namespace Ragnarok.AgentApi
 {
+    /// <summary>
+    /// ngrok Agent Api wrapper
+    /// </summary>
     public partial class RagnarokClient : IDisposable
     {
         private const string BaseURL = "http://127.0.0.1:4040";
 
         internal NgrokProcessManager Ngrok { get; }
+
         /// <summary>
         /// Configuration details as defined in the ngrok.yml file
         /// </summary>
         public NgrokConfiguration Config { get; }
+
         /// <summary>
         /// Options for modifying the behavior of the Ragnarok client
         /// </summary>
@@ -35,7 +40,12 @@ namespace Ragnarok.AgentApi
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
 
+        /// <param name="logger"><see cref="ILogger"/> instance for logging <see cref="RagnarokClient"/></param>
         public RagnarokClient(ILogger<RagnarokClient> logger = null) : this(new HttpClient(), Create(new RagnarokOptions()), logger) { }
+
+        /// <param name="httpClient"></param>
+        /// <param name="options"></param>
+        /// <param name="logger"></param>
         public RagnarokClient(HttpClient httpClient, IOptions<RagnarokOptions> options = null, ILogger<RagnarokClient> logger = null)
         {
             _logger = logger;
@@ -188,6 +198,9 @@ namespace Ragnarok.AgentApi
         /// </summary>
         public void KillNgrokProcess() => Ngrok.KillProcess();
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public void Dispose() => Ngrok?.Dispose();
     }
 }

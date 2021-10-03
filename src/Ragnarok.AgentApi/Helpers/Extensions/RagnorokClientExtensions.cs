@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Ragnarok.AgentApi.Extensions
 {
+    /// <summary>
+    /// Extension methods for <see cref="RagnarokClient"/>
+    /// </summary>
     public static class RagnorokClientExtensions
     {
         /// <summary>
@@ -17,12 +20,13 @@ namespace Ragnarok.AgentApi.Extensions
         /// </summary>
         /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
         /// <param name="authToken">Authorization token to register in ngrok.yml</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns><see cref="TunnelDetail"/></returns>
         /// <remarks>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
-        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, string authToken = null, CancellationToken cancellation = default)
-            => await ConnectAsync(client, new TunnelDefinition(), authToken, cancellation);
+        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, string authToken = null, CancellationToken cancellationToken = default)
+            => await ConnectAsync(client, new TunnelDefinition(), authToken, cancellationToken);
 
         /// <summary>
         /// Start ngrok and open a tunnel
@@ -30,12 +34,13 @@ namespace Ragnarok.AgentApi.Extensions
         /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
         /// <param name="port">Local port number to forward traffic</param>
         /// <param name="authToken">Authorization token to register in ngrok.yml</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns><see cref="TunnelDetail"/></returns>
         /// <remarks>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
-        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, int port, string authToken = null, CancellationToken cancellation = default)
-            => await ConnectAsync(client, option => option.Address = port.ToString(), authToken, cancellation);
+        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, int port, string authToken = null, CancellationToken cancellationToken = default)
+            => await ConnectAsync(client, option => option.Address = port.ToString(), authToken, cancellationToken);
 
         /// <summary>
         /// Start ngrok and open a tunnel
@@ -43,13 +48,14 @@ namespace Ragnarok.AgentApi.Extensions
         /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
         /// <param name="tunnelName">Named tunnel configured in ngrok.yml</param>
         /// <param name="authToken">Authorization token to register in ngrok.yml</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns><see cref="TunnelDetail"/></returns>
         /// <remarks>
         /// The name provided must exist in the ngrok configuration file. <br/>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
         public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, string tunnelName, 
-                                                            string authToken = null, CancellationToken cancellation = default)
+                                                            string authToken = null, CancellationToken cancellationToken = default)
         {
             var definition = client.Config.Tunnels.FirstOrDefault(x => x.Key.Equals(tunnelName, StringComparison.OrdinalIgnoreCase));
 
@@ -58,7 +64,7 @@ namespace Ragnarok.AgentApi.Extensions
 
             definition.Value.Name = definition.Key;
 
-            return await ConnectAsync(client, definition.Value, authToken, cancellation);
+            return await ConnectAsync(client, definition.Value, authToken, cancellationToken);
         }
 
         /// <summary>
@@ -67,17 +73,18 @@ namespace Ragnarok.AgentApi.Extensions
         /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
         /// <param name="options">Options used to define the tunnel to be created</param>
         /// <param name="authToken">Authorization token to register in ngrok.yml</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns><see cref="TunnelDetail"/></returns>
         /// <remarks>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
         public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, Action<TunnelDefinition> options,
-                                                            string authToken = null, CancellationToken cancellation = default)
+                                                            string authToken = null, CancellationToken cancellationToken = default)
         {
             var definition = new TunnelDefinition();
             options?.Invoke(definition);
 
-            return await ConnectAsync(client, definition, authToken, cancellation);
+            return await ConnectAsync(client, definition, authToken, cancellationToken);
         }
 
         /// <summary>
@@ -86,19 +93,20 @@ namespace Ragnarok.AgentApi.Extensions
         /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
         /// <param name="options">Options used to define the tunnel to be created</param>
         /// <param name="authToken">Authorization token to register in ngrok.yml</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns><see cref="TunnelDetail"/></returns>
         /// <remarks>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
         public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, TunnelDefinition options, 
-                                                            string authToken = null, CancellationToken cancellation = default)
+                                                            string authToken = null, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrWhiteSpace(authToken)) await client.RegisterAuthTokenAsync(authToken);
             if (!client.Ngrok.IsActive) await client.InitializeAsync();
 
             options ??= new TunnelDefinition();
 
-            return await client.StartTunnelAsync(options, cancellation);
+            return await client.StartTunnelAsync(options, cancellationToken);
         }
 
         /// <summary>
@@ -106,22 +114,23 @@ namespace Ragnarok.AgentApi.Extensions
         /// </summary>
         /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
         /// <param name="url">The <see cref="TunnelDetail.PublicURL"/> of the tunnel to stop</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <remarks>
         /// If <paramref name="url"/> is not provided, all tunnels will be stopped
         /// </remarks>
-        public static async Task<bool> DisconnectAsync(this RagnarokClient client, string url = null, CancellationToken cancellation = default)
+        public static async Task<bool> DisconnectAsync(this RagnarokClient client, string url = null, CancellationToken cancellationToken = default)
         {
             if (!client.Ngrok.IsActive) return false;
 
-            var tunnels = await client.ListTunnelsAsync(cancellation);
+            var tunnels = await client.ListTunnelsAsync(cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(url)) return await client.DisconnectAllAsync(tunnels, cancellation: cancellation);
+            if (string.IsNullOrWhiteSpace(url)) return await client.DisconnectAllAsync(tunnels, cancellationToken: cancellationToken);
 
             var detail = tunnels.FirstOrDefault(x => x.PublicURL.Equals(url, StringComparison.OrdinalIgnoreCase));
 
             if (detail == null) return false;
 
-            await client.StopTunnelAsync(detail.Name, cancellation);
+            await client.StopTunnelAsync(detail.Name, cancellationToken);
 
             return true;
         }
@@ -131,13 +140,14 @@ namespace Ragnarok.AgentApi.Extensions
         /// </summary>
         /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
         /// <param name="tunnels">List of <see cref="TunnelDetail"/>s to be stopped</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns></returns>
-        private static async Task<bool> DisconnectAllAsync(this RagnarokClient client, IEnumerable<TunnelDetail> tunnels, CancellationToken cancellation = default)
+        private static async Task<bool> DisconnectAllAsync(this RagnarokClient client, IEnumerable<TunnelDetail> tunnels, CancellationToken cancellationToken = default)
         {
             if (!tunnels.Any()) return false;
 
             foreach (var tunnel in tunnels)
-                await client.StopTunnelAsync(tunnel.Name, cancellation);
+                await client.StopTunnelAsync(tunnel.Name, cancellationToken);
 
             return true;
         }

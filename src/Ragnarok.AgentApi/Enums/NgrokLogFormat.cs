@@ -1,5 +1,8 @@
 ﻿namespace Ragnarok.AgentApi
 {
+    /// <summary>
+    /// Format of the ngrok client logs
+    /// </summary>
     public enum NgrokLogFormat
     {
         /// <summary>

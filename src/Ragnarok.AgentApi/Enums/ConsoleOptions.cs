@@ -1,5 +1,8 @@
 ﻿namespace Ragnarok.AgentApi
 {
+    /// <summary>
+    /// Possible options for enabling/disabling the console ui in the ngrok.yml file
+    /// </summary>
     public enum ConsoleOptions
     {
         /// <summary>

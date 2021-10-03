@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Ragnarok.AgentApi.Helpers
 {
-    public class StringConverter : JsonConverter<string>
+    internal class StringConverter : JsonConverter<string>
     {
         public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

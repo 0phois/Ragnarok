@@ -9,11 +9,15 @@ using System;
 
 namespace Ragnarok.HostedService.Extensions
 {
+    /// <summary>
+    /// <see cref="IWebHostBuilder"/> extension methods
+    /// </summary>
     public static class IWebHostBuilderExtensions
     {
         /// <summary>
-        /// Use the <see cref="NgrokHostedService"/>
+        /// Configure the <see cref="NgrokHostedService"/> for use by this application
         /// </summary>
+        /// <param name="builder"></param>
         /// <param name="options">Options to modify the behaviour of the <see cref="RagnarokClient"/></param>
         /// <param name="authToken">The ngrok authToken to register in the ngrok.yml configuration file</param>
         /// <remarks>

@@ -15,11 +15,25 @@ using System.Threading.Tasks;
 
 namespace Ragnarok.HostedService
 {
+    /// <summary>
+    /// Manages the ngrok process
+    /// </summary>
     public class NgrokHostedService : INgrokHostedService, IDisposable
     {
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public event EventHandler Ready;
+
+        /// <summary>
+        /// Raises the <see cref="Ready"/> event
+        /// </summary>
+        /// <param name="tunnels">The created tunnels</param>
         protected virtual void OnReady(IEnumerable<TunnelDetail> tunnels) => Ready?.Invoke(this, new ReadyEventArgs() { Tunnels = tunnels });
 
+        /// <summary>
+        /// An instance of <see cref="RagnarokClient"/> that provides access to the ngrok client process and the ngrok Agent Api
+        /// </summary>
         public RagnarokClient RagnarokClient { get; }
 
         private readonly IServer _server;
@@ -27,11 +41,23 @@ namespace Ragnarok.HostedService
         private readonly ILogger<NgrokHostedService> _logger;
         private readonly IHostApplicationLifetime _appLifetime;
 
+        /// <param name="client"></param>
+        /// <param name="server"></param>
+        /// <param name="logger"><see cref="ILogger"/> instance for logging <see cref="NgrokHostedService"/></param>
+        /// <param name="applicationLifetime">Allows consumers to be notified of application lifetime events</param>
         public NgrokHostedService(RagnarokClient client,
                                   IServer server,
                                   ILogger<NgrokHostedService> logger,
-                                  IHostApplicationLifetime appLifetime) : this(client, server, null, logger, appLifetime) { }
+                                  IHostApplicationLifetime applicationLifetime) : this(client, server, null, logger, applicationLifetime) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="server"></param>
+        /// <param name="token">ngrok authtoken</param>
+        /// <param name="logger"><see cref="ILogger"/> instance for logging <see cref="NgrokHostedService"/></param>
+        /// <param name="applicationLifetime">Allows consumers to be notified of application lifetime events</param>
         public NgrokHostedService(RagnarokClient client, IServer server, AuthToken token, 
                                   ILogger<NgrokHostedService> logger, IHostApplicationLifetime applicationLifetime)
         {
@@ -43,6 +69,11 @@ namespace Ragnarok.HostedService
             _appLifetime = applicationLifetime;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _appLifetime.ApplicationStarted.Register(async () => 
@@ -56,7 +87,7 @@ namespace Ragnarok.HostedService
                 {
                     var bind = address.StartsWith("http://") ? BindTLS.Both : BindTLS.True;
                     var tunnel = await RagnarokClient.ConnectAsync(new TunnelDefinition().Address(address).BindTLS(bind), 
-                                                                   cancellation: cancellationToken);
+                                                                   cancellationToken: cancellationToken);
 
                     if (tunnel != null) tunnels.Add(tunnel);
 
@@ -77,11 +108,19 @@ namespace Ragnarok.HostedService
             return urls.Distinct();
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-           await RagnarokClient.DisconnectAsync(cancellation: cancellationToken);
+           await RagnarokClient.DisconnectAsync(cancellationToken: cancellationToken);
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public void Dispose()
         {
             RagnarokClient.StopNgrokProcess();

@@ -99,7 +99,7 @@ namespace Ragnarok.AgentApi.Models
 		public string Key { get; set; }
 
 		/// <summary>
-		/// PEM TLS certificate authority at this path will verify incoming TLS client connection certificates. <br/>
+		/// PEM TLS certificate authority at this path will verify incoming TLS client connection certificates <br/>
 		/// <b><see cref="TunnelProtocol.TLS"/></b>
 		/// </summary>
 		[YamlMember(Alias = "client_cas")]

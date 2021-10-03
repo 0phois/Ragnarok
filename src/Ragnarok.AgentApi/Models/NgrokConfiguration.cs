@@ -3,7 +3,10 @@ using YamlDotNet.Serialization;
 
 namespace Ragnarok.AgentApi.Models
 {
-	//https://ngrok.com/docs#config-examples
+	/// <summary>
+	/// Configuration properties from the ngrok.yml file.
+	/// <see href="https://ngrok.com/docs#config-examples"/>
+	/// </summary>
 	public class NgrokConfiguration
     {
 		/// <summary>

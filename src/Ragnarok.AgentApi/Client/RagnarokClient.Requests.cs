@@ -15,6 +15,7 @@ namespace Ragnarok.AgentApi
         /// Dynamically starts a new tunnel on the ngrok client. 
         /// </summary>
         /// <param name="request"><see cref="TunnelDefinition"/> properties to use when creating the tunnel</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns><see cref="TunnelDetail"/> describing the started tunnel</returns>
         public Task<TunnelDetail> StartTunnelAsync(TunnelDefinition request, CancellationToken cancellationToken = default)
             => Ngrok.IsActive ? AgentApi.StartTunnelAsync(request, cancellationToken) : throw new NotInitializedException();
@@ -23,6 +24,7 @@ namespace Ragnarok.AgentApi
         /// Get status and metrics about the named running tunnel
         /// </summary>
         /// <param name="name">The name of the running tunnel</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns><see cref="TunnelDetail"/> describing the started tunnel</returns>
         public Task<TunnelDetail> GetTunnelDetailAsync(string name, CancellationToken cancellationToken = default)
             => Ngrok.IsActive ? AgentApi.GetTunnelDetailAsync(name, cancellationToken) : throw new NotInitializedException();
@@ -30,6 +32,7 @@ namespace Ragnarok.AgentApi
         /// <summary>
         /// Retrieve a list of running tunnels with status and metrics information.
         /// </summary>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns>An array of <see cref="TunnelDetail"/></returns>
         public Task<ImmutableArray<TunnelDetail>> ListTunnelsAsync(CancellationToken cancellationToken = default)
             => Ngrok.IsActive ? AgentApi.ListTunnelsAsync(cancellationToken): throw new NotInitializedException();
@@ -38,6 +41,7 @@ namespace Ragnarok.AgentApi
         /// Stop a running tunnel.
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         public Task StopTunnelAsync(string name, CancellationToken cancellationToken = default)
             => Ngrok.IsActive ? AgentApi.StopTunnelAsync(name, cancellationToken) : Task.CompletedTask;
 
@@ -46,6 +50,7 @@ namespace Ragnarok.AgentApi
         /// <i><see cref="TunnelDefinition.Inspect"/> must be enabled</i>
         /// </summary>
         /// <param name="options"></param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns>An array of captured <see cref="RequestDetail"/></returns>
         /// <remarks>
         /// This will only return requests that are still in memory.<br/>
@@ -59,6 +64,7 @@ namespace Ragnarok.AgentApi
         /// The raw data is base64-encoded in the JSON response. 
         /// </summary>
         /// <param name="requestId">The id of the request to retrieve</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns><see cref="RequestDetail"/></returns>
         /// <remarks>
         /// The response value maybe null if the local server has not yet responded to a request.
@@ -71,6 +77,7 @@ namespace Ragnarok.AgentApi
         /// </summary>
         /// <param name="requestId">The id of request to replay</param>
         /// <param name="tunnelName">The name of the tunnel to play the request against. 
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// If unspecified, the request is played against the same tunnel it was recorded on</param>
         public Task<bool> ReplayCapturedRequestAsync(string requestId, string tunnelName = null, CancellationToken cancellationToken = default)
             => Ngrok.IsActive ? AgentApi.ReplayCapturedRequestsAsync(requestId, tunnelName, cancellationToken) : throw new NotInitializedException();
@@ -78,6 +85,7 @@ namespace Ragnarok.AgentApi
         /// <summary>
         /// Deletes all captured requests
         /// </summary>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         public Task<bool> DeleteCapturedRequestsAsync(CancellationToken cancellationToken = default)
             => Ngrok.IsActive ? AgentApi.DeleteCapturedRequestsAsync(cancellationToken) : throw new NotInitializedException();
     }

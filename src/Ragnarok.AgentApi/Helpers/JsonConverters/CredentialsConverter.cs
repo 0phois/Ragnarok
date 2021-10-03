@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Ragnarok.AgentApi.Helpers
 {
-    public class CredentialsConverter : JsonConverter<AuthenticationCredentials>
+    internal class CredentialsConverter : JsonConverter<AuthenticationCredentials>
     {
         public override AuthenticationCredentials Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

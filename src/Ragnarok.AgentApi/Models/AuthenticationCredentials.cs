@@ -14,6 +14,10 @@
         /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        /// Returns the string representation of the current object
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return $"{Username}:{Password}";

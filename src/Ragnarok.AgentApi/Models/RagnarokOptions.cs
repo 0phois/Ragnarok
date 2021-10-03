@@ -2,8 +2,14 @@
 
 namespace Ragnarok.AgentApi.Models
 {
+	/// <summary>
+	/// Options for managing the <see cref="RagnarokClient"/>
+	/// </summary>
     public class RagnarokOptions
     {
+		/// <summary>
+		/// Use for binding the class to a configuration provider
+		/// </summary>
 		public const string Ragnarok = "Ragnarok";
 
 		/// <summary>
