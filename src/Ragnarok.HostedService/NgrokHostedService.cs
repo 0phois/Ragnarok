@@ -23,7 +23,7 @@ namespace Ragnarok.HostedService
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public event EventHandler Ready;
+        public event EventHandler<ReadyEventArgs> Ready;
 
         /// <summary>
         /// Raises the <see cref="Ready"/> event
@@ -32,7 +32,7 @@ namespace Ragnarok.HostedService
         protected virtual void OnReady(IEnumerable<TunnelDetail> tunnels) => Ready?.Invoke(this, new ReadyEventArgs() { Tunnels = tunnels });
 
         /// <summary>
-        /// An instance of <see cref="RagnarokClient"/> that provides access to the ngrok client process and the ngrok Agent Api
+        /// <inheritdoc/>
         /// </summary>
         public RagnarokClient RagnarokClient { get; }
 

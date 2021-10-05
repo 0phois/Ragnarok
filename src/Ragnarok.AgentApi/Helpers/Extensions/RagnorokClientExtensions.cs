@@ -71,6 +71,31 @@ namespace Ragnarok.AgentApi.Extensions
         /// Start ngrok and open a tunnel
         /// </summary>
         /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
+        /// <param name="details"><see cref="TunnelDetail"/> to replicate</param>
+        /// <param name="authToken">Authorization token to register in ngrok.yml</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
+        /// <remarks>
+        /// Creates a new tunnel based on properties defined in the provided <see cref="TunnelDetail"/> <br/>
+        /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
+        /// </remarks>
+        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, TunnelDetail details, 
+                                                            string authToken = null, CancellationToken cancellationToken = default)
+        {
+            return await ConnectAsync(client, options =>
+            {
+                options.Name = details.Name;
+                options.Protocol = details.Proto;
+                options.Address = details.Config.Address;
+                options.BindTLS = details.Proto == TunnelProtocol.HTTP ? BindTLS.False : BindTLS.True;
+            }, 
+            authToken: authToken,
+            cancellationToken: cancellationToken);
+        }
+
+        /// <summary>
+        /// Start ngrok and open a tunnel
+        /// </summary>
+        /// <param name="client">An instance of <see cref="RagnarokClient"/></param>
         /// <param name="options">Options used to define the tunnel to be created</param>
         /// <param name="authToken">Authorization token to register in ngrok.yml</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
