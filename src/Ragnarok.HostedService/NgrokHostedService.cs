@@ -85,9 +85,15 @@ namespace Ragnarok.HostedService
 
                 foreach (var address in addresses)
                 {
+                    var url = new Uri(address);
                     var bind = address.StartsWith("http://") ? BindTLS.Both : BindTLS.True;
-                    var tunnel = await RagnarokClient.ConnectAsync(new TunnelDefinition().Address(address).BindTLS(bind), 
-                                                                   cancellationToken: cancellationToken);
+                    var tunnel = await RagnarokClient.ConnectAsync(options => 
+                    {
+                        options.Address(address);
+                        options.HostHeader(url.Authority);
+                        options.BindTLS(bind);
+                    }, 
+                    cancellationToken: cancellationToken);
 
                     if (tunnel != null) tunnels.Add(tunnel);
 
@@ -116,14 +122,14 @@ namespace Ragnarok.HostedService
         public async Task StopAsync(CancellationToken cancellationToken)
         {
            await RagnarokClient.DisconnectAsync(cancellationToken: cancellationToken);
+           RagnarokClient.StopNgrokProcess();
         }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         public void Dispose()
-        {
-            RagnarokClient.StopNgrokProcess();
+        {           
             RagnarokClient.Dispose();
         }
     }
