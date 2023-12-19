@@ -48,7 +48,7 @@ namespace Ragnarok.Test
             #endregion
 
             #region act
-            var downloadManager = new DownloadManager(_httpClient);
+            var downloadManager = new DownloadManager();
             await downloadManager.DownloadNgrokAsync(Ragnarok.Options.NgrokExecutablePath);
             #endregion
 
@@ -72,7 +72,7 @@ namespace Ragnarok.Test
             #endregion
 
             #region act
-            var downloadManager = new DownloadManager(_httpClient);
+            var downloadManager = new DownloadManager();
             await downloadManager.DownloadNgrokAsync(Ragnarok.Options.NgrokExecutablePath);
             #endregion
 

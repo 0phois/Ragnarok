@@ -5,7 +5,7 @@ namespace Ragnarok.AgentApi.Helpers
 {
     internal static class StatusHelper
     {
-        public static readonly IReadOnlyDictionary<int, string> StatusMap = new ReadOnlyDictionary<int, string>(new Dictionary<int, string>() 
+        public static readonly IReadOnlyDictionary<int, string> StatusMap = new ReadOnlyDictionary<int, string>(new Dictionary<int, string>()
         {
             [100] = "Invalid metadata length: val bytes. Max: max",
             [102] = "The last payment for the account account failed. The account has been suspended. Update the payment information here: https://dashboard.ngrok.com/billing/payment-method",

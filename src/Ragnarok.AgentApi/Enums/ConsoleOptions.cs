@@ -8,14 +8,14 @@
         /// <summary>
         /// Enable the UI only if standard out is a TTY (not a file or pipe)
         /// </summary>
-        Iftty,
+        iftty,
         /// <summary>
         /// Enable the console UI
         /// </summary>
-        True,
+        @true,
         /// <summary>
         /// Disable the console UI
         /// </summary>
-        False
+        @false
     }
 }

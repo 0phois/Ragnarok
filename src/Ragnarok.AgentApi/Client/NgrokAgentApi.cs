@@ -24,18 +24,26 @@ namespace Ragnarok.AgentApi
         private const string FormattedRequestsEndpoint = "api/requests/http/{0}";
 
         private readonly ILogger _logger;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         private HttpClient Client { get; }
         public bool ThrowOnError { get; init; }
 
-        public NgrokAgentApi(HttpClient client) : this(client, null) { }
+        public NgrokAgentApi(HttpClient client) : this(client, string.Empty, null) { }
 
-        public NgrokAgentApi(HttpClient client, ILogger logger)
+        public NgrokAgentApi(HttpClient client, string apiKey, ILogger logger)
         {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+            if (!string.IsNullOrWhiteSpace(apiKey))
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
             Client = client;
             _logger = logger;
+            _jsonSerializerOptions = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull,
+            };
         }
 
         public async Task<TunnelDetail> StartTunnelAsync(TunnelDefinition request, CancellationToken cancellationToken = default)
@@ -43,11 +51,11 @@ namespace Ragnarok.AgentApi
             AssertNotNull(nameof(request), request == null);
             AssertNotNull(nameof(request.Address), request == null);
 
-            if (request.Protocol == TunnelProtocol.HTTPS) request.Protocol = TunnelProtocol.HTTP;
+            if (request.Protocol == TunnelProtocol.https) request.Protocol = TunnelProtocol.http;
 
             bool retry;
             int attempts = 0;
-            string json = JsonSerializer.Serialize(request).ToLower();
+            string json = JsonSerializer.Serialize(request, _jsonSerializerOptions).ToLower();
 
             _logger?.LogDebug("POST: {Base}{Endpoint}={Content}", Client.BaseAddress, TunnelsEndpoint, json);
 
@@ -76,7 +84,7 @@ namespace Ragnarok.AgentApi
             _logger?.LogDebug("GET: {Base}{Endpoint}", Client.BaseAddress, request);
 
             var response = await Client.GetAsync(request, cancellationToken);
-            
+
             return await ParseResponseAsync<TunnelDetail>(response, cancellationToken: cancellationToken);
         }
 
@@ -121,7 +129,7 @@ namespace Ragnarok.AgentApi
             var response = await Client.GetAsync(queryString, cancellationToken);
             var request = await ParseResponseAsync<CapturedRequest>(response, cancellationToken: cancellationToken);
 
-            return request.Requests.ToImmutableArray();
+            return [.. request.Requests];
         }
 
         public async Task<RequestDetail> GetCapturedRequestDetailAsync(string requestId, CancellationToken cancellationToken = default)
@@ -141,7 +149,7 @@ namespace Ragnarok.AgentApi
         {
             AssertNotNull(nameof(requestId), string.IsNullOrWhiteSpace(requestId));
 
-            var json = JsonSerializer.Serialize(new { id = requestId, tunnel_name = tunnelName });
+            var json = JsonSerializer.Serialize(new { id = requestId, tunnel_name = tunnelName }, _jsonSerializerOptions);
 
             _logger?.LogDebug("POST: {Base}{Endpoint}={Content}", Client.BaseAddress, RequestsEndpoint, json);
 
@@ -190,7 +198,7 @@ namespace Ragnarok.AgentApi
             {
                 await ParseRequestErrorAsync(response, suppressErrorCode, cancellationToken);
                 return default;
-            }               
+            }
         }
 
         private async Task ParseRequestErrorAsync(HttpResponseMessage response, int suppressErrorCode = -1, CancellationToken cancellationToken = default)

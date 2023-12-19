@@ -43,10 +43,10 @@ namespace Ragnarok.Test
             #region act
             var tunnel = new TunnelDefinition()
             {
-                Name = "King's Cross", 
+                Name = "King's Cross",
                 Address = "5975",
-                Protocol = TunnelProtocol.HTTP, 
-                BindTLS = BindTLS.False
+                Protocol = TunnelProtocol.http,
+                Scheme = Scheme.http
             };
             var detail = await Ragnarok.StartTunnelAsync(tunnel);
             Ragnarok.StopNgrokProcess();
@@ -55,7 +55,7 @@ namespace Ragnarok.Test
             #region assert
             Assert.NotNull(detail);
             Assert.Equal("king's cross", detail.Name);
-            Assert.Equal(TunnelProtocol.HTTP, detail.Proto);
+            Assert.Equal(TunnelProtocol.http, detail.Protocol);
             Assert.Equal("http://localhost:5975", detail.Config.Address);
             #endregion
         }
@@ -69,8 +69,8 @@ namespace Ragnarok.Test
             {
                 Name = "King's Cross",
                 Address = "5975",
-                Protocol = TunnelProtocol.HTTP,
-                BindTLS = BindTLS.False
+                Protocol = TunnelProtocol.http,
+                Scheme = Scheme.http
             };
             #endregion
 
@@ -93,7 +93,7 @@ namespace Ragnarok.Test
             {
                 Name = "secure tunnel",
                 Address = "5555",
-                Protocol = TunnelProtocol.HTTP
+                Protocol = TunnelProtocol.http
             };
             await Ragnarok.StartTunnelAsync(tunnel);
             #endregion
@@ -106,7 +106,7 @@ namespace Ragnarok.Test
             #region assert
             Assert.NotNull(detail);
             Assert.Equal("secure tunnel", detail.Name);
-            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal(TunnelProtocol.https, detail.Protocol);
             Assert.Equal("http://localhost:5555", detail.Config.Address);
             #endregion
         }
@@ -137,7 +137,7 @@ namespace Ragnarok.Test
             {
                 Name = "my tunnels",
                 Address = "5555",
-                Protocol = TunnelProtocol.HTTP
+                Protocol = TunnelProtocol.http
             };
             await Ragnarok.StartTunnelAsync(tunnel);
             #endregion
@@ -174,13 +174,13 @@ namespace Ragnarok.Test
         public async Task ListNgrokTunnels_After_StoppingTunnel()
         {
             #region arrange
-            await Ragnarok.InitializeAsync(); 
+            await Ragnarok.InitializeAsync();
             var tunnel = new TunnelDefinition()
             {
                 Name = "railroad",
                 Address = "5050",
-                Protocol = TunnelProtocol.HTTP,
-                BindTLS = BindTLS.False
+                Protocol = TunnelProtocol.http,
+                Scheme = Scheme.http
             };
             await Ragnarok.StartTunnelAsync(tunnel);
             await Task.Delay(500);
@@ -192,7 +192,7 @@ namespace Ragnarok.Test
             #endregion
 
             #region assert
-            await Assert.ThrowsAsync<NgrokApiException>(act);            
+            await Assert.ThrowsAsync<NgrokApiException>(act);
             #endregion
         }
 

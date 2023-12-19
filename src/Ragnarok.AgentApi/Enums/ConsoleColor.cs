@@ -8,10 +8,10 @@
         /// <summary>
         /// The console UI's background to black
         /// </summary>
-        Black,
+        black,
         /// <summary>
         /// Don't set a background color when displaying the console UI
         /// </summary>
-        Transparent
+        transparent
     }
 }

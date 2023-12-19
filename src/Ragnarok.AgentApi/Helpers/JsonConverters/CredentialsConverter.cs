@@ -5,9 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Ragnarok.AgentApi.Helpers
 {
-    internal class CredentialsConverter : JsonConverter<AuthenticationCredentials>
+    internal class CredentialsConverter : JsonConverter<AuthenticationCredentials[]>
     {
-        public override AuthenticationCredentials Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override AuthenticationCredentials[] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             using var jsonDoc = JsonDocument.ParseValue(ref reader);
             var data = jsonDoc.RootElement.GetRawText().Split(':', 2);
@@ -15,13 +15,17 @@ namespace Ragnarok.AgentApi.Helpers
             if (data.Length != 2)
                 throw new FormatException("The credentials provided does not match the expected format 'username:password'");
 
-            return new AuthenticationCredentials() { Username = data[0], Password = data[1] };
+            return [new AuthenticationCredentials() { Username = data[0], Password = data[1] }];
         }
 
-        public override void Write(Utf8JsonWriter writer, AuthenticationCredentials value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, AuthenticationCredentials[] value, JsonSerializerOptions options)
         {
-            using JsonDocument document = JsonDocument.Parse(@$"""{value}""");
-            document.RootElement.WriteTo(writer);
+            writer.WriteStartArray();
+
+            foreach (var credential in value)
+                writer.WriteStringValue($"{credential.Username}:{credential.Password}");
+
+            writer.WriteEndArray();
         }
     }
 }

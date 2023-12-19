@@ -15,14 +15,15 @@ namespace Ragnarok.AgentApi.Services
     public sealed class DownloadManager
     {
         private const string CDN = "https://bin.equinox.io";
-        private const string CDN_Path = "c/4VmDzA7iaHb/Ngrok-stable";
+        private const string CDN_Path = "/c/bNyj1mQVY4c/ngrok-v3-stable-";
 
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient = new();
         private string DownloadUrl { get; } = $"{CDN}/{CDN_Path}-{RuntimeHelper.GetOsArchitectureString()}.zip";
 
-
-        /// <param name="httpClient">Http client used to download the ngrok executable</param>
-        public DownloadManager(HttpClient httpClient) => _httpClient = httpClient;
+        /// <summary>
+        /// Create a new instance of the download manager
+        /// </summary>
+        public DownloadManager() { }
 
         /// <summary>
         /// Download ngrok executable from equinox.io
@@ -46,7 +47,7 @@ namespace Ragnarok.AgentApi.Services
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) GrantFileExecutablePermissions(downloadPath);
 
-            if (File.Exists(filePath)) File.Delete(filePath);            
+            if (File.Exists(filePath)) File.Delete(filePath);
         }
 
         private static void GrantFileExecutablePermissions(string path)

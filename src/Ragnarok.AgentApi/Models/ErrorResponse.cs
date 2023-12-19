@@ -10,17 +10,17 @@ namespace Ragnarok.AgentApi.Models
 
     internal class ErrorResponse
     {
-		[JsonPropertyName("error_code")]
-		public int NgrokErrorCode { get; set; }
+        [JsonPropertyName("error_code")]
+        public int NgrokErrorCode { get; set; }
 
-		[JsonPropertyName("status_code")]
-		public int HttpStatusCode { get; set; }
+        [JsonPropertyName("status_code")]
+        public int HttpStatusCode { get; set; }
 
-		[JsonPropertyName("msg")]
-		public string Message { get; set; }
+        [JsonPropertyName("msg")]
+        public string Message { get; set; }
 
-		[JsonPropertyName("details")]
-		public Details Details { get; set; }
+        [JsonPropertyName("details")]
+        public Details Details { get; set; }
 
         public override string ToString()
         {

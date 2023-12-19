@@ -15,7 +15,7 @@ namespace Ragnarok.AgentApi.Services
 
         public Process Process;
         public bool IsManaged { get; private set; }
-        public bool IsActive { get; private set; } 
+        public bool IsActive { get; private set; }
 
         private NgrokProcessManager() { }
 
@@ -26,10 +26,10 @@ namespace Ragnarok.AgentApi.Services
         }
 
         public async Task StartProcessAsync(ProcessStartInfo startInfo)
-        {          
+        {
             Process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
 
-            var showConsole = _configs.ConsoleUI == ConsoleOptions.True;
+            var showConsole = _configs is null || _configs.ConsoleUI == ConsoleOptions.@true;
             if (!showConsole) AttachProcessListeners();
 
             Process.Exited += ProcessExited;
@@ -98,18 +98,20 @@ namespace Ragnarok.AgentApi.Services
 
         private void AttachProcessListeners()
         {
+            if (_configs is null) return;
+
             var stdout = _configs.Log.Equals("stdout", StringComparison.OrdinalIgnoreCase);
             var stderr = _configs.Log.Equals("stderr", StringComparison.OrdinalIgnoreCase);
 
-            if (stdout) 
+            if (stdout)
                 Process.OutputDataReceived += ProcessStandardOutput;
-            else if (stderr) 
+            else if (stderr)
                 Process.ErrorDataReceived += ProcessStandardError;
             else
                 _logger?.LogWarning("Log configuration is set to {CONFIG_LOG}. Client events require stdout or stderr to be set.", _configs.Log);
 
-            if (_configs.LogLevel > NgrokConfigLogLevel.Info)
-                _logger?.LogWarning("Log_Level configuration is set to {CONFIG_LOGLEVEL}. Client events require a log_level of info", _configs.Log); 
+            if (_configs.LogLevel > NgrokConfigLogLevel.info)
+                _logger?.LogWarning("Log_Level configuration is set to {CONFIG_LOGLEVEL}. Client events require a log_level of info", _configs.Log);
         }
 
         private void ProcessStandardError(object sender, DataReceivedEventArgs e)
@@ -119,7 +121,7 @@ namespace Ragnarok.AgentApi.Services
 
         private void ProcessStandardOutput(object sender, DataReceivedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(e.Data))_logger?.Log(e.Data);              
+            if (!string.IsNullOrWhiteSpace(e.Data)) _logger?.Log(e.Data);
         }
 
         /// <summary>

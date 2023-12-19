@@ -11,26 +11,26 @@ namespace Ragnarok.AgentApi
         /// <summary>
         /// log level not set
         /// </summary>
-        None,
+        none,
         /// <summary>
         /// Show debug logs
         /// </summary>
-        Debug,
+        debug,
         /// <summary>
         /// Show info logs
         /// </summary>
-        Info,
+        info,
         /// <summary>
         /// Show warnings and errors only
         /// </summary>
-        Warn,
+        warn,
         /// <summary>
         /// Show errors
         /// </summary>
-        Error,
+        error,
         /// <summary>
         /// Only critical errors are displayed
         /// </summary>
-        Crit
+        crit
     }
 }

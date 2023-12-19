@@ -9,20 +9,24 @@ namespace Ragnarok.AgentApi
     public enum TunnelProtocol
     {
         /// <summary>
+        /// Default
+        /// </summary>
+        none,
+        /// <summary>
         /// HyperText Transfer Protocol
         /// </summary>
-        HTTP,
+        http,
         /// <summary>
         /// HyperText Transfer Protocol Secure
         /// </summary>
-        HTTPS,
+        https,
         /// <summary>
         /// Transmission Control Protocol
         /// </summary>
-        TCP,
+        tcp,
         /// <summary>
         /// Transport Layer Security 
         /// </summary>
-        TLS
+        tls
     }
 }

@@ -99,10 +99,10 @@ var registered = await Ragnarok.RegisterAuthTokenAsync(token);
   <summary>Connect</summary>  
   
 ### Connect
-The `Connect` method encapsulates calling `InitializeAsync()` and `StartTunnelAsync()` as well as providing the option to supply an `authtoken` to be registered.
+The `Connect` method encapsulates calling `InitializeAsync()` and `StartTunnelAsync()`.
 ```csharp
-// defaults to opening an HTTP tunnel to port 80
-var tunnelDetail = await Ragnarok.ConnectAsync(); // https://92832de0.ngrok.io -> http://localhost:80
+// defaults to opening an HTTP tunnel to port 8080
+var tunnelDetail = await Ragnarok.ConnectAsync(); // https://92832de0.ngrok.io -> http://localhost:8080
 
 // provide an authtoken to be registered before the tunnel is started
 var tunnelDetail = await Ragnarok.ConnectAsync(token);
@@ -126,14 +126,14 @@ var tunnelDetail = await Ragnarok.ConnectAsync(opts =>
 { 
     opts.Address = "8443"; 
     opts.Auth = credentials;
-    opts.BindTLS = BindTLS.True;
-    opts.Subdomain = "encrypted";
+    opts.Scheme = Scheme.https;
+    opts.Domain = "add-your-static-ngrok-domain";
 });
 
 // Fluent builder (using extensions)
-var tunnelDetail = await Ragnarok.ConnectAsync(new TunnelDefinition().Name("myApp")
-                                                                     .Port(5432)
-                                                                     .Auth("bob", "passw0rd"));
+var tunnelDetail = await Ragnarok.ConnectAsync(new TunnelDefinition().WithName("myApp")
+                                                                     .WithPort(5432)
+                                                                     .WithAuthCredentials("bob", "passw0rd"));
 ```
     
   </details>  

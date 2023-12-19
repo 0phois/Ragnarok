@@ -8,30 +8,30 @@
         /// <summary>
         /// United States (Ohio)
         /// </summary>
-        US,
+        us,
         /// <summary>
         /// Europe (Frankfurt)
         /// </summary>
-        EU,
+        eu,
         /// <summary>
         /// Asia/Pacific (Singapore)
         /// </summary>
-        AP,
+        ap,
         /// <summary>
         /// Australia (Sydney)
         /// </summary>
-        AU,
+        au,
         /// <summary>
         /// South America (Sao Paulo)
         /// </summary>
-        SA,
+        sa,
         /// <summary>
         /// Japan (Tokyo)
         /// </summary>
-        JP,
+        jp,
         /// <summary>
         /// India (Mumbai)
         /// </summary>
-        IN
+        @in
     }
 }

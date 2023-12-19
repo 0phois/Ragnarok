@@ -1,0 +1,21 @@
+﻿version: 2
+authtoken: 
+console_ui: false
+console_ui_color: black
+inspect_db_size: 0
+log_level: debug
+log_format: json
+log: stdout
+metadata: 
+root_cas: 
+update_check: false
+update_channel: stable
+web_addr: 
+tunnels: 
+  myAppName: 
+    addr: 8080
+    proto: http 
+    oauth:
+      provider: google
+    schemes: 
+    - https

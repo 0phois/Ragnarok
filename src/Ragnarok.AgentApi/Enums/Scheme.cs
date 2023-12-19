@@ -3,23 +3,27 @@
 namespace Ragnarok.AgentApi
 {
     /// <summary>
-    /// Reference: <see href="https://ngrok.com/docs#http-bind-tls">https://ngrok.com/docs#http-bind-tls</see>
+    /// Create an HTTP or HTTPS endpoint (or both)
     /// </summary>
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum BindTLS
+    public enum Scheme
     {
+        /// <summary>
+        /// Default
+        /// </summary>
+        none,
         /// <summary>
         /// Opens endpoints for both HTTP and HTTPS traffic <br/>
         /// <i>Default behavior</i>
         /// </summary>
-        Both,
+        both,
         /// <summary>
         /// Only listen on an HTTP tunnel endpoint
         /// </summary>
-        False,
+        http,
         /// <summary>
         /// Only listen on an HTTPS tunnel endpoint
         /// </summary>
-        True
+        https
     }
 }

@@ -11,6 +11,6 @@ namespace Ragnarok.AgentApi.Models
         /// Tunnel gauge
         /// </summary>
 		[JsonPropertyName("gauge")]
-		public int Gauge { get; set; }
-	}
+        public int Gauge { get; set; }
+    }
 }

@@ -79,7 +79,7 @@ namespace Ragnarok.Test
             Assert.NotNull(ngrokProcess);
             Assert.False(ngrokProcess.HasExited);
             Assert.True(Ragnarok.Ngrok.IsActive);
-            Assert.False(Ragnarok.Ngrok.IsManaged);            
+            Assert.False(Ragnarok.Ngrok.IsManaged);
             #endregion
         }
 
@@ -142,6 +142,11 @@ namespace Ragnarok.Test
             #endregion
         }
 
-        public void Dispose() => Ragnarok.KillNgrokProcess();
+        public void Dispose()
+        {
+            Ragnarok.KillNgrokProcess();
+
+            GC.SuppressFinalize(this);
+        }
     }
 }

@@ -37,8 +37,8 @@ namespace Ragnarok.AgentApi
         /// Raises the <see cref="Terminated"/> event
         /// </summary>
         /// <param name="process">The ngrok <see cref="Process"/> that was terminated</param>
-        protected virtual void OnTerminated(Process process) 
-            => Terminated?.Invoke(this, new TerminateEventArgs() { ProcessId = process.Id, ExitCode = process.ExitCode});
+        protected virtual void OnTerminated(Process process)
+            => Terminated?.Invoke(this, new TerminateEventArgs() { ProcessId = process.Id, ExitCode = process.ExitCode });
 
         /// <summary>
         /// Raised when a tunnel is successfully started
@@ -49,15 +49,17 @@ namespace Ragnarok.AgentApi
         /// Raises the <see cref="TunnelCreated"/> event
         /// </summary>
         /// <param name="args"></param>
-        protected virtual void OnTunnelCreated(TunnelCreatedEventArgs args) 
+        protected virtual void OnTunnelCreated(TunnelCreatedEventArgs args)
             => TunnelCreated?.Invoke(this, args);
 
         private void RedirectProcesOutput()
         {
+            if (Config is null) return;
+
             if (Config.Log.Equals("stdout", StringComparison.OrdinalIgnoreCase))
-                Ngrok.Process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => 
-                { 
-                    if (!string.IsNullOrWhiteSpace(e.Data)) StatusChanged(e.Data); 
+                Ngrok.Process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+                {
+                    if (!string.IsNullOrWhiteSpace(e.Data)) StatusChanged(e.Data);
                 };
 
             if (Config.Log.Equals("stderr", StringComparison.OrdinalIgnoreCase))
@@ -73,17 +75,17 @@ namespace Ragnarok.AgentApi
                 OnConnected();
             else if (message.Contains("session closed, starting reconnect loop"))
                 OnDisconnected();
-            else if (message.Contains(@"""addr"":")) 
+            else if (message.Contains(@"""addr"":"))
             {
                 var tunnelInfo = JsonSerializer.Deserialize<NgrokCondensedTunnelLog>(message);
                 if (tunnelInfo.Message.Equals("started tunnel", StringComparison.OrdinalIgnoreCase))
-                    OnTunnelCreated(new TunnelCreatedEventArgs() 
-                    { 
+                    OnTunnelCreated(new TunnelCreatedEventArgs()
+                    {
                         TunnelAddress = tunnelInfo.Address,
-                        TunnelName = tunnelInfo.Name, 
-                        TunnelUrl = tunnelInfo.Url 
+                        TunnelName = tunnelInfo.Name,
+                        TunnelUrl = tunnelInfo.Url
                     });
-            } ;
+            };
         }
     }
 }

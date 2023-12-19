@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Ragnarok.AgentApi.Extensions;
 using Ragnarok.HostedService.Extensions;
 
 namespace WeatherAPI
@@ -16,7 +17,10 @@ namespace WeatherAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseNgrok(options => options.DownloadNgrok = true); //use the extension method to configure the hostedservice
+                    webBuilder.UseNgrok(options => options.DownloadNgrok = true,
+                                        tunnel => tunnel.WithName("weather-api")
+                                                        .WithOauthProvider("google")
+                                                        .WithDomain("cheerful-sober-mudfish.ngrok-free.app")); //use the extension method to configure the hostedservice
                 });
     }
 }

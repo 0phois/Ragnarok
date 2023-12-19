@@ -37,36 +37,35 @@ namespace Ragnarok.HostedService
         public RagnarokClient RagnarokClient { get; }
 
         private readonly IServer _server;
-        private readonly string _authToken;
         private readonly ILogger<NgrokHostedService> _logger;
         private readonly IHostApplicationLifetime _appLifetime;
+        private readonly TunnelDefinition _tunnelDefinition;
 
         /// <param name="client"></param>
         /// <param name="server"></param>
         /// <param name="logger"><see cref="ILogger"/> instance for logging <see cref="NgrokHostedService"/></param>
         /// <param name="applicationLifetime">Allows consumers to be notified of application lifetime events</param>
-        public NgrokHostedService(RagnarokClient client,
-                                  IServer server,
-                                  ILogger<NgrokHostedService> logger,
+        public NgrokHostedService(RagnarokClient client, IServer server, ILogger<NgrokHostedService> logger,
                                   IHostApplicationLifetime applicationLifetime) : this(client, server, null, logger, applicationLifetime) { }
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="client"></param>
         /// <param name="server"></param>
-        /// <param name="token">ngrok authtoken</param>
+        /// <param name="tunnelDefinition">Configuration for a tunnel to start</param>
         /// <param name="logger"><see cref="ILogger"/> instance for logging <see cref="NgrokHostedService"/></param>
         /// <param name="applicationLifetime">Allows consumers to be notified of application lifetime events</param>
-        public NgrokHostedService(RagnarokClient client, IServer server, AuthToken token, 
+        public NgrokHostedService(RagnarokClient client, IServer server, Action<TunnelDefinition> tunnelDefinition,
                                   ILogger<NgrokHostedService> logger, IHostApplicationLifetime applicationLifetime)
         {
             RagnarokClient = client;
 
             _logger = logger;
             _server = server;
-            _authToken = token?.RawValue;
+            _tunnelDefinition = new();
             _appLifetime = applicationLifetime;
+
+            tunnelDefinition?.Invoke(_tunnelDefinition);
         }
 
         /// <summary>
@@ -76,34 +75,68 @@ namespace Ragnarok.HostedService
         /// <returns></returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _appLifetime.ApplicationStarted.Register(async () => 
+            _appLifetime.ApplicationStarted.Register(async () =>
             {
-                var tunnels = new List<TunnelDetail>();
+                var tunnels = _tunnelDefinition is null ? RagnarokClient.Config.Tunnels?.Values.ToArray() ?? [] : [_tunnelDefinition];
+                var tunnelDetails = new List<TunnelDetail>();
                 var addresses = GetApplicationUrls();
 
-                if (!string.IsNullOrWhiteSpace(_authToken)) await RagnarokClient.RegisterAuthTokenAsync(_authToken);
-
-                foreach (var address in addresses)
+                if (tunnels.Length > 0)
                 {
-                    var url = new Uri(address);
-                    var bind = address.StartsWith("http://") ? BindTLS.Both : BindTLS.True;
-                    var tunnel = await RagnarokClient.ConnectAsync(options => 
-                    {
-                        options.Address(address);
-                        options.HostHeader(url.Authority);
-                        options.BindTLS(bind);
-                    }, 
-                    cancellationToken: cancellationToken);
-
-                    if (tunnel != null) tunnels.Add(tunnel);
-
-                    _logger?.LogInformation("Started tunnel {name}: {url} -> {localAddress}", tunnel.Name, tunnel.PublicURL, address);
+                    await CreateConfiguredTunnels(tunnels, addresses, tunnelDetails, cancellationToken);
+                }
+                else
+                {
+                    await CreateDefaultTunnels(addresses, tunnelDetails, cancellationToken);
                 }
 
-                OnReady(tunnels);
+                OnReady(tunnelDetails);
             });
 
             return Task.CompletedTask;
+        }
+
+        private async Task CreateConfiguredTunnels(IEnumerable<TunnelDefinition> tunnels, IEnumerable<string> addresses,
+                                                   List<TunnelDetail> tunnelDetails, CancellationToken cancellationToken)
+        {
+            foreach (var tunnel in tunnels)
+            {
+                string[] targetAddress = string.IsNullOrEmpty(tunnel.Address) ? addresses.ToArray() : [tunnel.Address];
+
+                foreach (var address in targetAddress)
+                {
+                    TunnelDetail tunnelDetail = await RagnarokClient.ConnectAsync(tunnel.WithAddress(address), cancellationToken: cancellationToken)
+                                                                    .ConfigureAwait(false);
+
+                    if (tunnelDetail is not null)
+                    {
+                        tunnelDetails.Add(tunnelDetail);
+                        _logger?.LogInformation("Started tunnel {name}: {url} -> {localAddress}", tunnelDetail.Name, tunnelDetail.PublicURL, address);
+                    }
+                }
+            }
+        }
+
+        private async Task CreateDefaultTunnels(IEnumerable<string> addresses, List<TunnelDetail> tunnelDetails, CancellationToken cancellationToken)
+        {
+            foreach (var address in addresses)
+            {
+                var uri = new Uri(address);
+                var scheme = address.StartsWith("http://") ? Scheme.both : Scheme.https;
+                var tunnelDetail = await RagnarokClient.ConnectAsync(options =>
+                {
+                    options.WithAddress(address);
+                    options.WithHostHeader(uri.Authority);
+                    options.WithScheme(scheme);
+                },
+                cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                if (tunnelDetail is not null)
+                {
+                    tunnelDetails.Add(tunnelDetail);
+                    _logger?.LogInformation("Started tunnel {name}: {url} -> {localAddress}", tunnelDetail.Name, tunnelDetail.PublicURL, address);
+                }
+            }
         }
 
         private IEnumerable<string> GetApplicationUrls()
@@ -121,16 +154,18 @@ namespace Ragnarok.HostedService
         /// <returns></returns>
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-           await RagnarokClient.DisconnectAsync(cancellationToken: cancellationToken);
-           RagnarokClient.StopNgrokProcess();
+            await RagnarokClient.DisconnectAsync(cancellationToken: cancellationToken);
+            RagnarokClient.StopNgrokProcess();
         }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         public void Dispose()
-        {           
+        {
             RagnarokClient.Dispose();
+
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -57,12 +57,12 @@ namespace Ragnarok.Test.Logging
         {
             return logLevel switch
             {
-                LogLevel.Trace =>       "[TRACE]",
-                LogLevel.Debug =>       "[DEBUG]",
+                LogLevel.Trace => "[TRACE]",
+                LogLevel.Debug => "[DEBUG]",
                 LogLevel.Information => "[INFO ]",
-                LogLevel.Warning =>     "[WARN ]",
-                LogLevel.Error =>       "[ERROR]",
-                LogLevel.Critical =>    "[CRIT!]",
+                LogLevel.Warning => "[WARN ]",
+                LogLevel.Error => "[ERROR]",
+                LogLevel.Critical => "[CRIT!]",
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
             };
         }

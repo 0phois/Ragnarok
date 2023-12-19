@@ -36,12 +36,12 @@ namespace Ragnarok.AgentApi
         /// Options for modifying the behavior of the Ragnarok client
         /// </summary>
         public RagnarokOptions Options { get; }
-        
+
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
 
         /// <param name="logger"><see cref="ILogger"/> instance for logging <see cref="RagnarokClient"/></param>
-        public RagnarokClient(ILogger<RagnarokClient> logger = null) : this(new HttpClient(), Create(new RagnarokOptions()), logger) { }
+        public RagnarokClient(ILogger<RagnarokClient> logger = null) : this(new HttpClient(), logger: logger) { }
 
         /// <param name="httpClient"></param>
         /// <param name="options"></param>
@@ -60,7 +60,7 @@ namespace Ragnarok.AgentApi
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             Ngrok = new NgrokProcessManager(Config, _logger);
-            AgentApi = new NgrokAgentApi(_httpClient, _logger) { ThrowOnError = Options.ThrowOnError } ;
+            AgentApi = new NgrokAgentApi(_httpClient, Config.ApiKey, _logger) { ThrowOnError = Options.ThrowOnError };
 
         }
 
@@ -95,7 +95,7 @@ namespace Ragnarok.AgentApi
 
         private async Task ConnectionDelayAsync()
         {
-            if (Config.LogLevel > NgrokConfigLogLevel.Info)
+            if (Config is not null && Config.LogLevel > NgrokConfigLogLevel.info)
             {
                 _logger?.LogWarning("Unable to wait for connection event. Delaying 1s...Enable Log_Level info for more accurate connection wait times");
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -104,37 +104,43 @@ namespace Ragnarok.AgentApi
             {
                 var connected = await this.WaitForEventAsync("Connected", TimeSpan.FromMilliseconds(Options.TimeoutMilliseconds));
                 if (!connected) throw new TimeoutException($"ngrok failed to establish a connection in the specified time {Options.TimeoutMilliseconds}");
-            }            
+            }
         }
 
         private async Task VerifyExecutable()
         {
             if (File.Exists(Options.NgrokExecutablePath)) return;
 
-            if (!Options.DownloadNgrok) 
-                throw new FileNotFoundException("Unable to locate ngrok executable and the path specified. Consider enabling DownloadNgrok in RagnarokOptions",
+            if (!Options.DownloadNgrok)
+                throw new FileNotFoundException("Unable to locate ngrok executable at the path specified. Consider enabling DownloadNgrok in RagnarokOptions",
                                                 Options.NgrokExecutablePath);
-            
+
             _logger?.LogInformation("ngrok executable not found at {Location}. Downloading ngrok...", Options.NgrokExecutablePath);
 
-            var downloadManager = new DownloadManager(_httpClient);
+            await DownloadExecutableAsync();
+        }
+
+        private async Task DownloadExecutableAsync()
+        {
+            if (File.Exists(Options.NgrokExecutablePath)) return;
+
+            var downloadManager = new DownloadManager();
             await downloadManager.DownloadNgrokAsync(Options.NgrokExecutablePath);
-            
+
             _logger?.LogInformation("Successfully downloaded ngrok -> {Location}", Options.NgrokExecutablePath);
         }
 
         private ProcessStartInfo GetProcessStartInfo()
         {
-            var showConsole = Config.ConsoleUI == ConsoleOptions.True;
-            var stdout = Config.Log.Equals("stdout", StringComparison.OrdinalIgnoreCase);
-            var stderr = Config.Log.Equals("stderr", StringComparison.OrdinalIgnoreCase);
+            var showConsole = Config is null || Config.ConsoleUI == ConsoleOptions.@true;
+            var stdout = Config?.Log.Equals("stdout", StringComparison.OrdinalIgnoreCase) ?? false;
+            var stderr = Config?.Log.Equals("stderr", StringComparison.OrdinalIgnoreCase) ?? false;
 
             if (showConsole && (stdout || stderr))
                 throw new NgrokConfigurationException("Console UI connot be enabled if logging stdout or stderr");
 
             var arguments = new StringBuilder("start --none")
-                                      .Append(" -region=").Append(Config.Region)
-                                      .Append(" -config=").Append(Options.NgrokConfigPath);
+                                      .Append(" --config=").Append(Options.NgrokConfigPath);
 
             if (stdout) arguments.Append(" --log=stdout");
             if (stderr) arguments.Append(" --log=stderr");
@@ -154,9 +160,9 @@ namespace Ragnarok.AgentApi
         private static Uri GetBaseAddress(string address)
         {
             if (string.IsNullOrWhiteSpace(address)) address = BaseURL;
-            else if (address.Equals("false", StringComparison.OrdinalIgnoreCase)) 
+            else if (address.Equals("false", StringComparison.OrdinalIgnoreCase))
                 throw new NgrokConfigurationException("Setting 'web_addr:false' is not supported");
-            
+
             if (!address.StartsWith("http", StringComparison.OrdinalIgnoreCase)) address = address.Insert(0, "http://");
 
             return new Uri(address);
@@ -166,7 +172,11 @@ namespace Ragnarok.AgentApi
         {
             path ??= DirectoryHelper.DefaultConfigPath();
 
-            if (!File.Exists(path)) return null;
+            if (!File.Exists(path))
+            {
+                File.Create(path).Close();
+                return new();
+            }
 
             using StreamReader reader = File.OpenText(path);
             var deserializer = new DeserializerBuilder().Build();
@@ -201,6 +211,11 @@ namespace Ragnarok.AgentApi
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public void Dispose() => Ngrok?.Dispose();
+        public void Dispose()
+        {
+            Ngrok?.Dispose();
+
+            GC.SuppressFinalize(this);
+        }
     }
 }

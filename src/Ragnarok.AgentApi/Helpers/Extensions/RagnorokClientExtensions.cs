@@ -54,12 +54,15 @@ namespace Ragnarok.AgentApi.Extensions
         /// The name provided must exist in the ngrok configuration file. <br/>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
-        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, string tunnelName, 
+        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, string tunnelName,
                                                             string authToken = null, CancellationToken cancellationToken = default)
         {
+            if (client.Config.Tunnels is null)
+                throw new NgrokConfigurationException($"No configured tunnels exist");
+
             var definition = client.Config.Tunnels.FirstOrDefault(x => x.Key.Equals(tunnelName, StringComparison.OrdinalIgnoreCase));
 
-            if (definition.Equals(default(KeyValuePair<string, TunnelDefinition>))) 
+            if (definition.Equals(default(KeyValuePair<string, TunnelDefinition>)))
                 throw new NgrokConfigurationException($"Could not find config for named tunnel {tunnelName}");
 
             definition.Value.Name = definition.Key;
@@ -78,16 +81,16 @@ namespace Ragnarok.AgentApi.Extensions
         /// Creates a new tunnel based on properties defined in the provided <see cref="TunnelDetail"/> <br/>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
-        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, TunnelDetail details, 
+        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, TunnelDetail details,
                                                             string authToken = null, CancellationToken cancellationToken = default)
         {
             return await ConnectAsync(client, options =>
             {
                 options.Name = details.Name;
-                options.Protocol = details.Proto;
+                options.Protocol = details.Protocol;
                 options.Address = details.Config.Address;
-                options.BindTLS = details.Proto == TunnelProtocol.HTTP ? BindTLS.False : BindTLS.True;
-            }, 
+                options.Scheme = details.Protocol == TunnelProtocol.http ? Scheme.http : Scheme.https;
+            },
             authToken: authToken,
             cancellationToken: cancellationToken);
         }
@@ -123,7 +126,7 @@ namespace Ragnarok.AgentApi.Extensions
         /// <remarks>
         /// <see cref="RagnarokClient.InitializeAsync"/> will be called if not previously executed
         /// </remarks>
-        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, TunnelDefinition options, 
+        public static async Task<TunnelDetail> ConnectAsync(this RagnarokClient client, TunnelDefinition options,
                                                             string authToken = null, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrWhiteSpace(authToken)) await client.RegisterAuthTokenAsync(authToken);
@@ -194,7 +197,7 @@ namespace Ragnarok.AgentApi.Extensions
                 RedirectStandardOutput = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = client.Options.NgrokExecutablePath,
-                Arguments = $"authtoken {authToken} --config={client.Options.NgrokConfigPath}"
+                Arguments = $"add-authtoken {authToken} --config={client.Options.NgrokConfigPath}"
             };
 
             var process = new Process() { StartInfo = startInfo };
@@ -205,7 +208,7 @@ namespace Ragnarok.AgentApi.Extensions
             };
 
             process.OutputDataReceived += (sender, e) =>
-            {                
+            {
                 if (!string.IsNullOrWhiteSpace(e.Data)) processData.AppendLine(e.Data);
             };
 
@@ -227,7 +230,7 @@ namespace Ragnarok.AgentApi.Extensions
             return true;
         }
 
-        internal static async Task<bool> WaitForEventAsync(this RagnarokClient client, string eventName, TimeSpan timeout) 
+        internal static async Task<bool> WaitForEventAsync(this RagnarokClient client, string eventName, TimeSpan timeout)
         {
             var type = client.GetType();
             var eventInfo = type.GetEvent(eventName);
@@ -235,7 +238,7 @@ namespace Ragnarok.AgentApi.Extensions
             var delay = Task.Delay(timeout);
             var promise = new TaskCompletionSource<bool>();
 
-            EventHandler handler = (object sender, EventArgs args) => promise.SetResult(true); 
+            EventHandler handler = (object sender, EventArgs args) => promise.SetResult(true);
 
             eventInfo.AddEventHandler(client, handler);
 

@@ -13,7 +13,7 @@ namespace Ragnarok.AgentApi.Models
 
         [JsonPropertyName("lvl")]
         public NgrokLoggerLogLevel Level { get; set; }
-        
+
         [JsonPropertyName("msg")]
         public string Message { get; set; }
 
@@ -39,10 +39,10 @@ namespace Ragnarok.AgentApi.Models
             var name = string.IsNullOrEmpty(Name) ? string.Empty : $"name={Name} ";
             var status = StatusCode.HasValue ? $"status={StatusCode}: {StatusHelper.StatusMap[StatusCode.Value]} " : string.Empty;
             var error = string.IsNullOrEmpty(ErrorMessage) || ErrorMessage.Equals("nil") || ErrorMessage.Equals("\u003cnil\u003e")
-                            ? string.Empty 
+                            ? string.Empty
                             : $"| err={ErrorMessage} ";
 
-            return $"[{Timestamp:MMM-dd|HH:mm:ss}] {Message, -50} {obj}{name}{id}{status}{error}";
+            return $"[{Timestamp:MMM-dd|HH:mm:ss}] {Message,-50} {obj}{name}{id}{status}{error}";
         }
     }
 }

@@ -24,11 +24,13 @@ namespace Ragnarok.AgentApi.Helpers
             try
             {
                 var log = message.StartsWith('{') ? ParseJsonLog(message) : ParseFormattedLog(message);
-                if (log.Level != NgrokLoggerLogLevel.None) logger.Log((LogLevel)log.Level, log.ToString());
+
+                if (log.Level != NgrokLoggerLogLevel.None)
+                    logger.Log((LogLevel)log.Level, message: "=> {message}", log);
             }
             catch (Exception ex)
             {
-                logger.LogInformation(message);
+                logger.LogInformation("=> {message}", message);
                 Debug.WriteLine($"Error formatting log message: {ex}");
             }
 
@@ -43,7 +45,7 @@ namespace Ragnarok.AgentApi.Helpers
             _ => JsonSerializer.Deserialize<NgrokCondensedLog>(message),
         };
 
-        public static NgrokCondensedLog ParseFormattedLog(string message) 
+        public static NgrokCondensedLog ParseFormattedLog(string message)
         {
             var currentPosition = 0;
             var rawMessage = message.AsSpan();
@@ -62,7 +64,7 @@ namespace Ragnarok.AgentApi.Helpers
                            .Append(',');
             }
 
-            jsonBuilder.Replace(',', '}', jsonBuilder.Length-1, 1);
+            jsonBuilder.Replace(',', '}', jsonBuilder.Length - 1, 1);
 
             return ParseJsonLog(jsonBuilder.ToString());
         }
@@ -74,7 +76,7 @@ namespace Ragnarok.AgentApi.Helpers
 
             if (index >= 0) currentPosition += index;
 
-            return index == -1 ? null : span.Slice(0, index);
+            return index == -1 ? null : span[..index];
         }
 
         private static string GetLogValue(ReadOnlySpan<char> span, ref int currentPosition)
@@ -94,7 +96,7 @@ namespace Ragnarok.AgentApi.Helpers
                     if (isEscaping && span[position] == '"')
                         isEscaping = false;
                     else if (quotes.Count > 0 && span[position] == quotes.Peek())
-                         quotes.Pop();
+                        quotes.Pop();
                     else if (QuotationMap.ContainsKey(span[position]))
                         quotes.Push(QuotationMap[span[position]]);
 
@@ -116,8 +118,8 @@ namespace Ragnarok.AgentApi.Helpers
                 if (index == -1) index = span.Length;
 
                 currentPosition += index + 1;
-                
-                return index == -1 ? span.ToString() : span.Slice(0, index).ToString();
+
+                return index == -1 ? span.ToString() : span[..index].ToString();
             }
         }
     }

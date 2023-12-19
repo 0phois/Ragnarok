@@ -35,7 +35,7 @@ namespace Ragnarok.AgentApi
         /// <param name="cancellationToken">Propagates notification that operations should be canceled</param>
         /// <returns>An array of <see cref="TunnelDetail"/></returns>
         public Task<ImmutableArray<TunnelDetail>> ListTunnelsAsync(CancellationToken cancellationToken = default)
-            => Ngrok.IsActive ? AgentApi.ListTunnelsAsync(cancellationToken): throw new NotInitializedException();
+            => Ngrok.IsActive ? AgentApi.ListTunnelsAsync(cancellationToken) : throw new NotInitializedException();
 
         /// <summary>
         /// Stop a running tunnel.

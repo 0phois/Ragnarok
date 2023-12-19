@@ -19,11 +19,12 @@ namespace Ragnarok.HostedService.Extensions
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="options">Options to modify the behaviour of the <see cref="RagnarokClient"/></param>
+        /// <param name="tunnelConfig">Options for defininig the tunnel to be created</param>
         /// <param name="authToken">The ngrok authToken to register in the ngrok.yml configuration file</param>
         /// <remarks>
         /// Associates the application with an ngrok client process and automatically creates tunnels for all local urls
         /// </remarks>
-        public static IWebHostBuilder UseNgrok(this IWebHostBuilder builder, Action<RagnarokOptions> options = null, string authToken = null)
+        public static IWebHostBuilder UseNgrok(this IWebHostBuilder builder, Action<RagnarokOptions> options = null, Action<TunnelDefinition> tunnelConfig = null, string authToken = null)
         {
             return builder
                 .ConfigureServices((context, services) =>
@@ -33,6 +34,9 @@ namespace Ragnarok.HostedService.Extensions
 
                     if (options != null)
                         services.AddOptions<RagnarokOptions>().Configure(options);
+
+                    if (tunnelConfig != null)
+                        services.AddSingleton(tunnelConfig);
 
                     services.AddLogging();
                     services.AddHttpClient<RagnarokClient>();

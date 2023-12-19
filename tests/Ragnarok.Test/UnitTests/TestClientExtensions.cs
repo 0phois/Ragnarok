@@ -50,7 +50,7 @@ namespace Ragnarok.Test
             #region assert
             Assert.NotNull(detail);
             Assert.Equal(AppDomain.CurrentDomain.FriendlyName, detail.Name);
-            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal(TunnelProtocol.https, detail.Protocol);
             Assert.Equal("http://localhost:80", detail.Config.Address);
             #endregion
         }
@@ -73,7 +73,7 @@ namespace Ragnarok.Test
             #region assert
             Assert.NotNull(detail);
             Assert.Equal(AppDomain.CurrentDomain.FriendlyName, detail.Name);
-            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal(TunnelProtocol.https, detail.Protocol);
             Assert.Equal("http://localhost:80", detail.Config.Address);
             #endregion
         }
@@ -95,7 +95,7 @@ namespace Ragnarok.Test
             #region assert
             Assert.NotNull(detail);
             Assert.Equal(AppDomain.CurrentDomain.FriendlyName, detail.Name);
-            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal(TunnelProtocol.https, detail.Protocol);
             Assert.Equal("http://localhost:5050", detail.Config.Address);
             #endregion
         }
@@ -117,7 +117,7 @@ namespace Ragnarok.Test
             #region assert
             Assert.NotNull(detail);
             Assert.Equal(AppDomain.CurrentDomain.FriendlyName, detail.Name);
-            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal(TunnelProtocol.https, detail.Protocol);
             Assert.Equal("http://localhost:5555", detail.Config.Address);
             #endregion
         }
@@ -139,7 +139,7 @@ namespace Ragnarok.Test
             #region assert
             Assert.NotNull(detail);
             Assert.Equal("myappname", detail.Name);
-            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal(TunnelProtocol.https, detail.Protocol);
             Assert.Equal("http://localhost:8888", detail.Config.Address);
             #endregion
         }
@@ -173,14 +173,14 @@ namespace Ragnarok.Test
 
             #region act
             var credentials = new AuthenticationCredentials() { Username = "bob", Password = "passw0rd" };
-            var detail = await Ragnarok.ConnectAsync(opts => { opts.Name = "secure"; opts.Address = "5432"; opts.Auth = credentials; });
+            var detail = await Ragnarok.ConnectAsync(opts => { opts.Name = "secure"; opts.Address = "5432"; opts.Auth = [credentials]; });
             Ragnarok.StopNgrokProcess();
             #endregion
 
             #region assert
             Assert.NotNull(detail);
             Assert.Equal("secure", detail.Name);
-            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal(TunnelProtocol.https, detail.Protocol);
             Assert.Equal("http://localhost:5432", detail.Config.Address);
             #endregion
         }
@@ -195,14 +195,14 @@ namespace Ragnarok.Test
             #endregion
 
             #region act
-            var detail = await Ragnarok.ConnectAsync(new TunnelDefinition().Name("secure").Port(5432).Auth("bob", "passw0rd"));
+            var detail = await Ragnarok.ConnectAsync(new TunnelDefinition().WithName("secure").WithPort(5432).WithAuthCredentials("bob", "passw0rd"));
             Ragnarok.StopNgrokProcess();
             #endregion
 
             #region assert
             Assert.NotNull(detail);
             Assert.Equal("secure", detail.Name);
-            Assert.Equal(TunnelProtocol.HTTPS, detail.Proto);
+            Assert.Equal(TunnelProtocol.https, detail.Protocol);
             Assert.Equal("http://localhost:5432", detail.Config.Address);
             #endregion
         }

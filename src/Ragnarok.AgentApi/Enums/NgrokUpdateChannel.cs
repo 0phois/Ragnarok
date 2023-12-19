@@ -8,10 +8,10 @@
         /// <summary>
         /// To be used for all production deployments.
         /// </summary>
-        Stable,
+        stable,
         /// <summary>
         /// Update to new beta builds when available
         /// </summary>
-        Beta
+        beta
     }
 }
