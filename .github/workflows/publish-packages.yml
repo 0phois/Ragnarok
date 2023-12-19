@@ -20,14 +20,14 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Publish Agent API
-      uses: rohith/publish-nuget@v2.5.6
+      uses: rohith/publish-nuget@v2.5.5
       with:
         PROJECT_FILE_PATH: src/Ragnarok.AgentApi/Ragnarok.AgentApi.csproj
         VERSION_FILE_PATH: Directory.Build.props
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
         INCLUDE_SYMBOLS: false
     - name: Publish Hosted Service
-      uses: rohith/publish-nuget@v2.5.6
+      uses: rohith/publish-nuget@v2.5.5
       with:
         PROJECT_FILE_PATH: src/Ragnarok.HostedService/Ragnarok.HostedService.csproj
         VERSION_FILE_PATH: Directory.Build.props
