@@ -5,6 +5,7 @@
     <Product>Ragnarok.HostedService</Product>
     <Title>Ragnarok Hosted Service</Title>
     <Description>A hosted service that automatically starts ngrok and establishes tunnels for the application's local urls</Description>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
