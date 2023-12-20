@@ -4,12 +4,12 @@
 	<p>Expose your localhost to the web</p>
 	
 ![GitHub](https://img.shields.io/github/license/0phois/Ragnarok?style=flat-square)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/0phois/Ragnarok/Nuget%20Publish?style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/0phois/Ragnarok/publish-packages.yml?style=flat-square)
 ![Nuget](https://img.shields.io/nuget/v/Ragnarok.AgentApi?color=teal&label=Agent%20Api&style=flat-square)
 ![Nuget](https://img.shields.io/nuget/v/Ragnarok.HostedService?color=teal&label=HostedService&style=flat-square)
 </br>
 </br>
-    <img src="https://ngrok.com/static/img/overview.png" alt="https://ngrok.com">
+    <img src="hero_image.svg" alt="https://ngrok.com">
 </div>
 
 ### What is [ngrok](https://ngrok.com)?
